@@ -36,7 +36,7 @@ app.use((req, res, next) => {
   next();
 });
 
-mongoose.connect('mongodb://localhost:27017/aim-trained', {
+mongoose.connect('mongodb://127.0.0.1/aim-trained', {
   useNewUrlParser: true,
 });
 
