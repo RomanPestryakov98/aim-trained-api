@@ -1,3 +1,4 @@
+const mongooseHidden = require('mongoose-hidden')();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const Unauthorized = require('../errors/Unauthorized');
@@ -24,6 +25,8 @@ const userSchema = new mongoose.Schema({
     hide: true,
   },
 });
+
+userSchema.plugin(mongooseHidden, { hidden: { _id: false, password: true } });
 
 userSchema.statics.findUserByCredentials = function (name, password) {
   return this.findOne({ name }).select('+password')
