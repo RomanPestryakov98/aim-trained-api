@@ -28,16 +28,11 @@ const userSchema = new mongoose.Schema({
 
 userSchema.plugin(mongooseHidden, { hidden: { _id: false, password: true } });
 
-userSchema.statics.findUserByCredentials = function (name, password) {
-  return this.findOne({ name }).select('+password')
+userSchema.statics.findUserByCredentials = function (conditions, password) {
+  return this.findOne(conditions).select('+password')
     .then((user) => {
       if (!user) {
-        return this.findOne({ email: name }).select('+password')
-          .then((login) => {
-            if (!login) {
-              throw new Unauthorized('Неправильные почта или пароль');
-            }
-          });
+        throw new Unauthorized('Неправильные почта или пароль');
       }
 
       return bcrypt.compare(password, user.password)
