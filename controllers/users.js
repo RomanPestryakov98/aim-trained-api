@@ -21,19 +21,24 @@ module.exports.login = (req, res, next) => {
 
 module.exports.createUser = (req, res, next) => {
   const {
-    name, password,
+    email, name, password,
   } = req.body;
 
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
-      name, password: hash,
+      email, name, password: hash,
     }))
     .then((user) => {
       res.send(user);
     })
     .catch((err) => {
       if (err.code === 11000) {
-        next(new Conflict('Пользователь с данным email уже существует'));
+        if (JSON.stringify(err.keyPattern).startsWith(`{"email":`)) {
+          next(new Conflict('Пользователь с такой почтой уже существует'));
+        }
+        else {
+          next(new Conflict('Пользователь с таким логином уже существует'));
+        }
       } else if (err.name === 'ValidationError') {
         next(next);
       } else {
