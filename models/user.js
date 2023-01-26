@@ -7,14 +7,12 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    index: true,
     unique: true,
     validate: [isEmail],
   },
   name: {
     type: String,
     required: true,
-    index: true,
     unique: true,
     minlength: 2,
     maxlength: 30,
@@ -44,5 +42,6 @@ userSchema.statics.findUserByCredentials = function (name, password) {
         });
     });
 };
-
-module.exports = mongoose.model('user', userSchema);
+const User = mongoose.model('user', userSchema);
+User.createIndexes();
+module.exports = User;
