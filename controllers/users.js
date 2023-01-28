@@ -59,19 +59,30 @@ module.exports.infoUser = (req, res, next) => {
 };
 
 module.exports.updateUser = (req, res, next) => {
-  const { name, password } = req.body;
+  const { email, name } = req.body;
 
-  bcrypt.hash(password, 10)
-    .then((hash) => User.findByIdAndUpdate(req.user._id, { name, password: hash }, { new: true, runValidators: true }))
-    .then(user => {
+  User.findByIdAndUpdate(
+    req.user._id,
+    { email, name },
+    {
+      new: true,
+      runValidators: true,
+    },
+  )
+    .then((user) => {
       if (!user) {
-        throw new NotFound('Пользователь не существует');
+        throw new NotFound('Некорректный id пользователя');
       }
-      res.send(user)
+      return res.send(user);
     })
     .catch((err) => {
       if (err.code === 11000) {
-        next(new Conflict('Такой email уже существует'));
+        if (JSON.stringify(err.keyPattern).startsWith(`{"email":`)) {
+          next(new Conflict('Пользователь с такой почтой уже существует'));
+        }
+        else {
+          next(new Conflict('Пользователь с таким логином уже существует'));
+        }
         return;
       }
       if (err.name === 'ValidationError') {
