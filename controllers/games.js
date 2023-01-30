@@ -11,6 +11,7 @@ module.exports.createGame = (req, res, next) => {
 
 module.exports.getAllGames = (req, res, next) => {
   Game.find({})
+    .populate(['creator'])
     .then((games) => {
       res.send(games);
     })
