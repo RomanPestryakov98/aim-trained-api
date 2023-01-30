@@ -3,14 +3,14 @@ const { celebrate, Joi } = require('celebrate');
 const validationUpdateUser = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    name: Joi.string().required().min(2).max(30),
+    name: Joi.string().required().min(2).max(15),
   }),
 });
 
 const validationSignin = celebrate({
   body: Joi.object().keys({
     email: Joi.string().email(),
-    name: Joi.string(),
+    name: Joi.string().min(2).max(15),
     password: Joi.string().required(),
   }),
 });
@@ -18,7 +18,7 @@ const validationSignin = celebrate({
 const validationSignup = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    name: Joi.string().required().min(2).max(30),
+    name: Joi.string().required().min(2).max(15),
     password: Joi.string().required(),
   }),
 });
