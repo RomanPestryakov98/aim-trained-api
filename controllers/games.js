@@ -8,3 +8,11 @@ module.exports.createGame = (req, res, next) => {
     })
     .catch(next);
 };
+
+module.exports.getAllGames = (req, res, next) => {
+  Game.find({})
+    .then((games) => {
+      res.send(games);
+    })
+    .catch(next);
+};
