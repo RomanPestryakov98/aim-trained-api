@@ -10,7 +10,8 @@ module.exports.createGame = (req, res, next) => {
 };
 
 module.exports.getAllGames = (req, res, next) => {
-  Game.find({})
+  const { time } = req.body;
+  Game.find({ time })
     .populate(['creator'])
     .then((games) => {
       res.send(games);
