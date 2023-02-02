@@ -8,7 +8,8 @@ const { validationSignin, validationSignup } = require('../middlewares/validatio
 router.post('/signup', validationSignup, createUser);
 router.post('/signin', validationSignin, login);
 
-router.use(auth, userRouter);
 router.use(gameRouter);
+router.use(auth, userRouter);
+
 
 module.exports = router;
