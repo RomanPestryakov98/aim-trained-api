@@ -6,6 +6,7 @@ const errorHandler = require('./middlewares/errorHandler');
 const { errors } = require('celebrate');
 const helmet = require('helmet');
 const allowedCors = require('./cors/allowedCors');
+const cookieParser = require('cookie-parser');
 
 const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 
@@ -42,6 +43,7 @@ mongoose.connect('mongodb://127.0.0.1/aim-trained', {
   useNewUrlParser: true,
 });
 
+app.use(cookieParser());
 app.use(helmet());
 
 app.use('/', router);

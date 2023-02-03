@@ -28,8 +28,8 @@ const userSchema = new mongoose.Schema({
 
 userSchema.plugin(mongooseHidden, { hidden: { _id: false, password: true } });
 
-userSchema.statics.findUserByCredentials = function (conditions, password) {
-  return this.findOne(conditions).select('+password')
+userSchema.statics.findUserByCredentials = function (login, password) {
+  return this.findOne(login).select('+password')
     .then((user) => {
       if (!user) {
         throw new Unauthorized('Неправильные почта или пароль');

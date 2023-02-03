@@ -1,3 +1,4 @@
+require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -6,17 +7,28 @@ const BadRequest = require('../errors/BadRequest');
 const Conflict = require('../errors/Conflict');
 const InternalServerError = require('../errors/InternalServerError');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
+module.exports.signout = (req, res) => {
+  res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true }).send({ message: 'Signed Out' });
+};
+
 module.exports.login = (req, res, next) => {
   const {
     email, name, password,
   } = req.body;
 
-  let conditions = name ? { name: name } : { email: email };
+  let login = name ? { name: name } : { email: email };
 
-  return User.findUserByCredentials(conditions, password)
+  return User.findUserByCredentials(login, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-      res.send({ token });
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+      res.cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+        sameSite: 'none',
+      })
+        .send({ message: 'ok' });
     })
     .catch(next);
 };
